@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 function restrict(role) {
+  const roles = ['standard', 'admin', 'super_admin'];
   return async (req, res, next) => {
     const authError = {
       message: 'Invalid credentials',
@@ -16,6 +17,13 @@ function restrict(role) {
         if (err) {
           return res.status(401).json(authError);
         }
+
+        if (role && roles.indexOf(decoded.userRole) < roles.indexOf(role)) {
+          return res.status(403).json({
+            message: 'You do not have permissions to access this information.',
+          });
+        }
+
         req.token = decoded;
 
         next();
