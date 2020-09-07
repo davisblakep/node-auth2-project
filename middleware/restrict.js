@@ -7,7 +7,7 @@ function restrict(role) {
     };
 
     try {
-      const token = req.headers.authorization;
+      const token = req.cookies.token;
       if (!token) {
         return res.status(401).json(authError);
       }
@@ -16,8 +16,8 @@ function restrict(role) {
         if (err) {
           return res.status(401).json(authError);
         }
-
         req.token = decoded;
+
         next();
       });
     } catch (err) {
